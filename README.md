@@ -1,37 +1,45 @@
 PAGINATION CLASS
 
 Add pagination to your mysql query.
+This object helps you modify your mysql query and appends a limit base on the display limit you specify.
 
-Example usage..
-$rdata = filter_input_array(INPUT_GET);
-$page = isset($rdata->page) ? $rdata->page : 1;
-$radius = isset($rdata->radius) ? $rdata->radius : 5; //Miles..      
-$no_items = isset($rdata->no_items) ? $rdata->no_items : 30;
+Sample Usage:
+*Please refer to demo.php
 
-$csql = "SELECT COUNT(*) AS count
- FROM {$this->table} AS p WHERE (p.longitude > 0 AND p.latitude > 0) AND SQRT(
- POW(69.1 * (latitude - {$rdata->lat}), 2) +
- POW(69.1 * ({$rdata->lng} - longitude) * COS(latitude / 57.3), 2)) < {$radius};";
+Sample output:
 
-$ctmp = $this->customQuery($csql);
-$count = $ctmp[0]->count;
-
-$pn = new yclPagination($count, $no_items, $page);
-$sql_query = "SELECT bp.title, bp.description, bp.rating, bp.category, bp.phone_no, bp.website, bp.featured, bp.*,
- cat.featured_img AS category_img, bp.featured_img AS company_img, cat.title AS category_name, SQRT(
- POW(69.1 * (bp.latitude - {$rdata->lat}), 2) +
- POW(69.1 * ({$rdata->lng} - bp.longitude) * COS(bp.latitude / 57.3), 2)) AS distance
- FROM {$this->table} AS bp"
-		. " INNER JOIN yel_categories AS cat ON cat.id = bp.category"
-		. " HAVING (distance < {$radius} AND distance > 0 )"
-		. " AND (bp.longitude > 0 AND bp.latitude > 0)"
-		. " ORDER BY distance ASC LIMIT {$pn->getDBStartPoint()}, {$no_items};";
-
-$result = $this->customQuery($sql_query);
-
-$output = (object) array(
-	"results" => $result,
-	"pagination" => $pn
-);
-
-return $output;
+F:\wamp\www\code-snippets\php\simple_pagination\demo.php:25:
+object(yclPagination)[2]
+  public 'no_pages' => float 2
+  public 'next_page' => float 2
+  public 'prev_page' => float 1
+  public 'current_page' => float 2
+  private 'db_start_point' => float 2
+  private 'total_no_items' => int 4
+  private 'max_no_rows' => int 2
+  private 'query' => string 'SELECT * FROM users WHERE true=true' (length=35)
+  private 'select_query' => string 'SELECT * FROM users WHERE true=true LIMIT 2,2;' (length=46)
+F:\wamp\www\code-snippets\php\simple_pagination\demo.php:27:
+array (size=2)
+  0 => 
+    object(stdClass)[4]
+      public 'id' => string '14' (length=2)
+      public 'email' => string 'popsana4u@live.com' (length=18)
+      public 'phone' => string '' (length=0)
+      public 'first_name' => string 'Popsana' (length=7)
+      public 'other_name' => string 'Noble' (length=5)
+      public 'last_name' => string 'Barida' (length=6)
+      public 'password' => string '$2y$10$14jKvFUU5/Yn9WNwU1EPjODATbKNluGtPCPmmm.x9ZgF77tHzFI3K' (length=60)
+      public 'created_at' => string '2016-11-11 13:46:32' (length=19)
+      public 'updated_at' => string '2016-11-11 13:46:32' (length=19)
+  1 => 
+    object(stdClass)[5]
+      public 'id' => string '15' (length=2)
+      public 'email' => string 'popsana4u@livee.com' (length=19)
+      public 'phone' => string '' (length=0)
+      public 'first_name' => string 'Popsana' (length=7)
+      public 'other_name' => string 'Noble' (length=5)
+      public 'last_name' => string 'Barida' (length=6)
+      public 'password' => string '$2y$10$vyV0zMGxUkDbsA0XMTQ.a..HUZQG6XSGn6imy9zWv0CCwP9H/xvKO' (length=60)
+      public 'created_at' => string '2016-11-11 15:23:32' (length=19)
+      public 'updated_at' => string '2016-11-11 15:23:32' (length=19)
